@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="color-scheme" content="light">
+<title>Growth Audit — Jodel</title>
+<meta name="description" content="The Jodel Plus paywall, rebuilt to open on the feature each Jodler tapped. A growth audit by Adapty.">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Shell: jodel.com — white, Gotham (Montserrat on the web), heavy italic headings, orange #FA7E0A buttons with their 5px offset shadow.
+   Phone: Jodel as it ships — the Plus paywall's purple-to-blue gradient, white pills, white plan cards, #FB7E0B button; the feed's coloured Jodels. */
+:root{
+  color-scheme:only light;
+  --ink:#1B1B1F; --ink-soft:#2B2B30; --muted:rgba(27,27,31,.6); --faint:rgba(27,27,31,.2); --line:rgba(27,27,31,.09);
+  --soft:#FBF8F5; --cream:#F6F2EE; --cream2:#ECE5DE; --white:#FFFFFF;
+  --gold:#FA7E0A; --gold-lift:#B65800; --gold-soft:#FFE8D2; --gold-dk:#C96206;
+  --mark:linear-gradient(transparent 60%,rgba(250,126,10,.32) 60%);
+  --f:'Montserrat','Gotham',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{font-family:var(--f);color:var(--ink-soft);background:var(--white);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,select{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+img,video{display:block}
+em.g{font-style:normal;background:var(--mark);padding:0 2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+@media(max-width:700px){.wrap{padding:0 16px}}
+
+/* ---- top bar ---- */
+.nav{position:sticky;top:0;z-index:50;padding:12px 12px 0}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 10px 0 22px;height:60px;display:flex;align-items:center;gap:14px;background:rgba(246,242,238,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:999px;box-shadow:0 1px 0 var(--line)}
+@media(max-width:700px){.nav-in{padding:0 8px 0 16px;gap:8px}}
+.logo{width:112px;height:23px;background:var(--gold);-webkit-mask:url(img/logo.png) left center/contain no-repeat;mask:url(img/logo.png) left center/contain no-repeat;flex:none}
+@media(max-width:400px){.logo{width:88px}}
+.nav-in .sep{width:1px;height:20px;background:var(--faint)}
+.nav-in .lbl{font-size:14px;color:var(--muted);white-space:nowrap}
+@media(max-width:760px){.nav-in .sep,.nav-in .lbl{display:none}}
+.tabs{margin-left:auto;display:flex;gap:2px}
+.tabs button{height:40px;padding:0 16px;border-radius:999px;font-size:15px;font-weight:600;color:var(--muted)}
+@media(max-width:400px){.tabs button{padding:0 11px;font-size:14px}}
+.tabs button.on{background:var(--white);color:var(--ink);box-shadow:0 1px 3px rgba(27,27,31,.1)}
+.demo{height:44px;padding:0 20px;border-radius:999px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;text-decoration:none;white-space:nowrap}
+.demo:hover{background:#000}
+@media(max-width:560px){.nav .demo{display:none}}
+.view{display:none}.view.on{display:block}
+
+/* ======================= OVERVIEW ======================= */
+/* hero: the blue of their App Store pages, their white contour lines, and Jodels floating up the feed */
+.sky{background:radial-gradient(120% 100% at 80% 20%,#4A9BF7 0%,#348DF5 45%,#2A7BE0 100%)}
+.hero-frame{margin:-72px 12px 0;border-radius:20px;overflow:hidden;position:relative;color:#fff;min-height:720px;display:flex;align-items:flex-end}
+.hero-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(28,92,190,.92) 0%,rgba(36,110,214,.62) 52%,rgba(52,141,245,0) 100%);pointer-events:none;z-index:1}
+.contour{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.22}
+.contour path{fill:none;stroke:#fff;stroke-width:1.4}
+.rise{position:absolute;right:2%;top:0;bottom:0;width:min(640px,56vw);pointer-events:none;overflow:hidden}
+.rise .jd{position:absolute;width:190px;border-radius:12px;padding:12px 30px 12px 12px;color:#fff;font:600 13px/1.35 -apple-system,'Inter',sans-serif;opacity:.0;animation:up 18s linear infinite;box-shadow:0 10px 24px rgba(0,0,0,.18)}
+.rise .jd b{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;text-align:center;line-height:1.1}
+.rise .jd b:before{content:"▲";display:block;font-size:9px;opacity:.85}
+.rise .jd small{display:block;font-size:10px;opacity:.8;margin-bottom:4px}
+@keyframes up{0%{transform:translateY(780px);opacity:0}8%{opacity:.34}85%{opacity:.34}100%{transform:translateY(-220px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.rise .jd{animation:none;opacity:.25;transform:translateY(var(--y,200px))}}
+.hero-in{position:relative;z-index:2;width:100%;display:grid;grid-template-columns:1.25fr .75fr;gap:30px;align-items:end;padding-top:190px;padding-bottom:56px}
+@media(max-width:900px){.hero-frame{min-height:0}.hero-in{grid-template-columns:1fr;padding-top:170px;padding-bottom:36px}}
+.eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);font-weight:600}
+.hero h1{font-size:clamp(34px,4.4vw,56px);line-height:1.04;font-weight:800;font-style:italic;letter-spacing:-.025em;margin-top:16px;max-width:840px;text-wrap:balance}
+.hero h1 em{font-style:italic;color:#FFD3A6}
+.hero .lead{font-size:clamp(17px,1.7vw,19px);line-height:1.55;margin-top:20px;max-width:660px;color:rgba(255,255,255,.9)}
+.cta-row{display:flex;gap:14px;align-items:center;margin-top:28px;flex-wrap:wrap}
+.btn-w{height:50px;padding:0 24px;border-radius:10px;background:var(--gold);color:#fff;font-size:17px;font-weight:700;display:inline-flex;align-items:center;gap:10px;box-shadow:5px 5px 0 var(--gold-dk)}
+.btn-w:hover{transform:translate(1px,1px);box-shadow:4px 4px 0 var(--gold-dk)}
+.btn-o{height:50px;padding:0 22px;border-radius:10px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font-size:17px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn-o:hover{background:rgba(255,255,255,.26)}
+.byline{margin-top:16px;font-size:14px;color:rgba(255,255,255,.72)}
+.fan{position:relative;height:420px}
+.fan img{position:absolute;width:184px;aspect-ratio:921/2000;object-fit:cover;object-position:top;border-radius:18px;border:4px solid #fff;box-shadow:0 24px 60px rgba(0,40,110,.45);background:#fff}
+.fan .j{width:84px;height:84px;border-radius:22px;border:0;aspect-ratio:auto;left:40%;bottom:0;z-index:4}
+@media(max-width:900px){.fan{height:290px}.fan img{width:124px;border-width:3px;border-radius:13px}.fan .j{width:62px;height:62px;border-radius:16px}}
+
+.stats{margin:12px 12px 0;border-radius:20px;background:var(--cream)}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:30px 18px;text-align:center;border-left:1px solid var(--line)}
+.stat:first-child{border-left:0}
+.stat b{display:block;font-size:38px;font-weight:800;font-style:italic;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
+.stat b i{font-style:normal;color:var(--gold)}
+.stat span{display:block;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.35}
+@media(max-width:800px){.stats .wrap{grid-template-columns:repeat(2,1fr)}.stat:nth-child(3){border-left:0}.stat{border-top:1px solid var(--line)}.stat:nth-child(-n+2){border-top:0}.stat b{font-size:30px}}
+
+.sec{padding:96px 0}
+@media(max-width:700px){.sec{padding:64px 0}}
+.sec-h{font-size:clamp(30px,3.9vw,46px);line-height:1.1;font-weight:800;font-style:italic;letter-spacing:-.025em;max-width:920px;color:var(--ink)}
+.sec-h b{font-weight:800;color:var(--muted)}
+.sec-p{font-size:18px;line-height:1.6;color:var(--muted);margin-top:18px;max-width:780px}
+.kick{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lift);font-weight:700;margin-bottom:14px}
+
+.about{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start}
+@media(max-width:860px){.about{grid-template-columns:1fr}}
+.flowp{margin-top:26px;display:flex;flex-direction:column;gap:10px}
+.flowp div{display:flex;gap:12px;align-items:flex-start;font-size:16px;color:var(--ink-soft);line-height:1.45}
+.flowp i{font-style:normal;flex:none;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;margin-top:1px}
+.flowp b{font-weight:700;color:var(--ink)}
+.flowp .k2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:8px}
+.note{background:var(--cream);border-radius:16px;padding:22px 24px}
+.note h4{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px;display:flex;gap:10px;align-items:center}
+.note h4 i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px}
+.note p{font-size:15px;color:var(--muted);line-height:1.55}
+.note+.note{margin-top:10px}
+
+/* where the paywall opens (in place of ads: none are running) */
+.entries{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px}
+@media(max-width:860px){.entries{grid-template-columns:1fr}}
+.en{background:var(--cream);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px;text-align:left;cursor:pointer;transition:background .15s}
+.en:hover{background:var(--cream2)}
+.en .pv{height:200px;border-radius:14px;overflow:hidden;position:relative}
+.en h4{font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.en p{font-size:14.5px;color:var(--muted);line-height:1.5}
+.en u{font-size:14.5px;font-weight:600;color:var(--ink);text-underline-offset:3px;text-decoration-color:var(--faint)}
+
+/* the five ideas */
+.list{margin-top:40px;display:flex;flex-direction:column;max-width:980px;border-top:1px solid var(--line)}
+.it{display:grid;grid-template-columns:64px 1fr;gap:18px;padding:26px 6px;cursor:pointer;border-bottom:1px solid var(--line);transition:background .2s}
+.it:hover{background:var(--soft)}
+@media(max-width:600px){.it{grid-template-columns:40px 1fr;gap:10px}}
+.it .em{font-size:22px;font-weight:800;font-style:italic;color:var(--gold);letter-spacing:-.02em;padding-top:2px}
+.it h3{font-size:21px;font-weight:700;letter-spacing:-.015em;line-height:1.3;color:var(--ink)}
+.it p{font-size:15.5px;color:var(--muted);margin-top:6px;line-height:1.55;max-width:780px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;flex-wrap:wrap}
+.out{display:inline-flex;align-items:baseline;gap:8px;background:var(--gold-soft);color:#8A4200;padding:5px 12px;border-radius:999px;font-weight:700;font-size:14.5px}
+.out small{font-weight:500;font-size:12.5px}
+.see{font-size:14.5px;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+
+/* the outcome */
+.outc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px}
+@media(max-width:860px){.outc{grid-template-columns:1fr}}
+.osh{position:relative;overflow:hidden;color:#fff;border-radius:20px;padding:36px 32px;display:flex;flex-direction:column;justify-content:flex-end;min-height:480px;background:linear-gradient(180deg,#A069E9 0%,#8672EB 40%,#6F79EE 70%,#388BF3 100%)}
+.osh>.ph{position:absolute;left:50%;top:34px;width:240px;transform:translateX(-50%);opacity:.95}
+.osh::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(40,90,190,.96) 36%,rgba(40,90,190,0) 74%)}
+.osh>*:not(.ph){position:relative;z-index:2}
+.osh .k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.osh h3{font-size:30px;font-weight:800;font-style:italic;letter-spacing:-.025em;margin-top:8px;line-height:1.15;max-width:460px}
+.osh .nums{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.osh .nums div{background:rgba(255,255,255,.14);border-radius:16px;padding:14px 20px;min-width:130px}
+.osh .nums b{display:block;font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1;color:#FFC48C}
+.osh .nums span{font-size:13.5px;color:rgba(255,255,255,.85)}
+.osh .cap{font-size:14.5px;color:rgba(255,255,255,.85);margin-top:18px;line-height:1.5;max-width:470px}
+.dos{display:flex;flex-direction:column;gap:12px}
+.do{background:var(--cream);border-radius:20px;padding:24px 26px;flex:1}
+.do .k{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lift);font-weight:700;margin-bottom:6px}
+.do h4{font-size:20px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
+.do p{font-size:15px;color:var(--muted);margin-top:6px;line-height:1.55}
+.endcta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:40px}
+.btn-k{height:52px;padding:0 26px;border-radius:10px;background:var(--gold);color:#fff;font-size:17px;font-weight:700;display:inline-flex;align-items:center;box-shadow:5px 5px 0 var(--gold-dk)}
+.btn-l{height:52px;padding:0 24px;border-radius:10px;background:var(--cream);color:var(--ink);font-size:17px;font-weight:600;display:inline-flex;align-items:center;text-decoration:none}
+.foot{font-size:13px;color:var(--muted);line-height:1.6;padding:30px 0 60px;border-top:1px solid var(--line);margin-top:36px}
+
+/* ======================= PROTOTYPE VIEW ======================= */
+.pwv{padding-top:48px;padding-bottom:70px}
+.pwv h1{font-size:clamp(32px,4.4vw,54px);font-weight:800;font-style:italic;line-height:1.05;letter-spacing:-.025em;color:var(--ink)}
+.pwv h1 b{font-weight:800;color:var(--muted)}
+.pwv .sub{font-size:18px;color:var(--muted);margin-top:14px;max-width:840px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;align-items:center}
+.seg{display:inline-flex;background:var(--cream);border-radius:999px;padding:3px}
+.seg button{height:36px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--white);color:var(--ink);box-shadow:0 1px 3px rgba(27,27,31,.12)}
+.wt{height:42px;padding:0 18px;border-radius:999px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.wt.on{background:var(--gold)}
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.steps button{height:44px;padding:0 18px;border-radius:999px;background:var(--cream);font-size:15px;font-weight:600;color:var(--ink-soft);transition:all .15s}
+.steps button:hover{background:var(--cream2)}
+.steps button.on{background:var(--ink);color:#fff}
+.steps button.td{background:#fff;box-shadow:inset 0 0 0 1.5px var(--faint);color:var(--muted)}
+.steps button.td.on{background:var(--muted);color:#fff;box-shadow:none}
+.stcap{margin-top:14px;font-size:15.5px;color:var(--muted);min-height:24px;max-width:900px}
+.stcap b{font-weight:700;color:var(--ink)}
+.dcap{margin-top:14px;height:0;overflow:hidden;transition:height .25s}
+.dcap.on{height:58px}
+.dcap-in{display:flex;align-items:center;gap:14px;background:var(--ink);color:#fff;border-radius:16px;padding:0 18px;height:58px;font-size:15px}
+.dcap-in .pr{flex:none;width:120px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
+.dcap-in .pr i{display:block;height:100%;width:0;background:var(--gold);transition:width .4s}
+.dcap-in span{flex:1}
+@media(max-width:600px){.dcap.on{position:fixed;left:8px;right:8px;bottom:8px;z-index:60;margin:0;height:auto}.dcap-in{height:auto;min-height:58px;padding:10px 14px;font-size:14px}.dcap-in .pr{width:60px}}
+.trio{display:flex;gap:28px;justify-content:center;margin-top:26px;--sc:.8}
+@media(max-width:899px){.trio{justify-content:flex-start;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px 14px;margin-left:-16px;margin-right:-16px;gap:16px;scrollbar-width:none}.trio::-webkit-scrollbar{display:none}}
+.tcol{flex:none;display:flex;flex-direction:column;align-items:center;scroll-snap-align:center}
+.apill{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px 0 6px;border-radius:999px;background:var(--cream);font-size:13.5px;font-weight:600;color:var(--ink-soft);margin-bottom:14px;max-width:calc(390px * var(--sc) + 20px);white-space:nowrap;overflow:hidden}
+.apill .mt{height:24px;padding:0 10px;border-radius:99px;background:var(--ring);color:#fff;font-size:11.5px;display:inline-flex;align-items:center;flex:none}
+.apill .tx{overflow:hidden;text-overflow:ellipsis}
+.pbox{width:calc(390px * var(--sc));height:calc(844px * var(--sc));position:relative}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;transform:scale(var(--sc));transform-origin:0 0;border-radius:58px;background:#0c0c0c;padding:12px;box-shadow:0 30px 60px rgba(27,27,31,.22),0 0 0 2px #2c2c2c inset}
+.tcol.ring .phone{box-shadow:0 30px 60px rgba(27,27,31,.22),0 0 0 6px var(--ring)}
+.tlab{margin-top:16px;text-align:center;max-width:calc(390px * var(--sc) + 10px)}
+.tlab b{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:700}
+.tlab span{display:block;font-size:14px;color:var(--muted);margin-top:4px;line-height:1.45}
+.ans{margin-top:12px;width:calc(390px * var(--sc));background:var(--cream);border-radius:16px;padding:10px 12px;text-align:left}
+.ans label{display:flex;flex-direction:column;font-size:10.5px;color:var(--muted);background:var(--white);border-radius:10px;padding:5px 10px 4px}
+.ans select{font-size:14px;font-weight:600;color:var(--ink);padding:1px 0;appearance:none;-webkit-appearance:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23777' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") right 2px center no-repeat;width:100%}
+.finger{position:absolute;z-index:30;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 2px rgba(27,27,31,.35),0 6px 18px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:left .38s var(--ease),top .38s var(--ease),transform .12s,opacity .2s}
+.finger.on{opacity:1}.finger.press{transform:scale(.72)}
+
+.ideas{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:56px}
+@media(max-width:800px){.ideas{grid-template-columns:1fr}}
+.idea{background:var(--cream);border-radius:16px;padding:22px 24px;cursor:pointer;transition:background .15s}
+.idea:hover{background:var(--cream2)}
+.idea:last-child{grid-column:1/-1}
+.idea .n{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-lift);font-weight:700}
+.idea h3{font-size:19px;font-weight:700;letter-spacing:-.015em;margin-top:4px;line-height:1.3;color:var(--ink)}
+.idea p{font-size:14.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+.idea .kept{font-size:13px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.qr{position:relative;overflow:hidden;display:flex;gap:26px;align-items:center;color:#fff;border-radius:20px;padding:30px 32px;margin-top:40px;flex-wrap:wrap}
+.qr>*{position:relative;z-index:2}
+.qr .masc{position:absolute;right:190px;bottom:-40px;width:200px;opacity:.18;z-index:1}
+.qr img.code{width:135px;height:135px;background:#fff;border-radius:12px;image-rendering:pixelated}
+.qr h3{font-size:24px;font-weight:800;font-style:italic;letter-spacing:-.02em}
+.qr p{font-size:15px;color:rgba(255,255,255,.88);margin-top:4px;max-width:480px}
+.qr .demo{margin-left:auto;background:#fff;color:var(--ink);height:48px;padding:0 24px;font-size:16px}
+@media(max-width:1080px){.qr img.code,.qr .masc{display:none}}
+@media(max-width:700px){.qr .demo{margin-left:0}}
+
+/* ---- inside the phone: Jodel as it ships. Every internal class is jd- ---- */
+.scr{position:absolute;inset:12px;border-radius:46px;overflow:hidden;color-scheme:only light;
+  --c-bg:#F4F4F6; --c-card:#FFFFFF; --c-ink:#1C1C1E; --c-ink2:#4A4A50; --c-mute:#8E8E93; --c-line:#E5E5EA; --c-bar:#FFFFFF;
+  --j-or:#F87F0C; --j-gr:#049A52; --j-pk:#E45BB5; --j-pu:#A866EA; --j-bl:#348DF5; --j-cta:#FB7E0B;
+  background:var(--c-bg);color:var(--c-ink);font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;display:flex;flex-direction:column}
+.phone.dk .scr{--c-bg:#111113; --c-card:#1E1E21; --c-ink:#F2F2F5; --c-ink2:#C9C9CF; --c-mute:#8E8E96; --c-line:#2C2C31; --c-bar:#18181B}
+.sb{height:50px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 36px;font-size:15px;font-weight:600;font-family:-apple-system,sans-serif;position:relative;z-index:6;color:var(--c-ink)}
+.sb.w{color:#fff}
+.sb .isl{position:absolute;left:50%;top:11px;width:120px;height:34px;margin-left:-60px;background:#000;border-radius:20px}
+.sb .ic{display:flex;gap:5px;align-items:center}
+.scr-top{flex:none;position:relative;z-index:5}
+.scr-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative}
+.scr-body::-webkit-scrollbar{display:none}
+.scr-foot{flex:none;position:relative;z-index:4}
+.toast{position:absolute;left:50%;bottom:120px;transform:translateX(-50%) translateY(10px);background:rgba(27,27,31,.94);color:#fff;font:600 13px/1.3 -apple-system,'Inter',sans-serif;padding:10px 15px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:40;white-space:nowrap;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.pulse{animation:pulse 1.6s ease-out 2}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(250,126,10,.95)}100%{box-shadow:0 0 0 16px rgba(250,126,10,0)}}
+.phone.pulse{animation:pring 1.6s ease-out 2}
+@keyframes pring{0%{box-shadow:0 0 0 0 rgba(250,126,10,.9)}100%{box-shadow:0 0 0 26px rgba(250,126,10,0)}}
+.jd-tap{animation:tapme 1.8s ease-out infinite}
+@keyframes tapme{0%{box-shadow:0 0 0 0 rgba(251,126,11,.7)}70%,100%{box-shadow:0 0 0 12px rgba(251,126,11,0)}}
+
+/* the Plus paywall */
+.jd-pw{background:linear-gradient(180deg,#A069E9 0%,#8672EB 38%,#6F79EE 62%,#4A86F2 82%,#388BF3 100%);color:#fff}
+.jd-pw .scr-body{padding:0 16px 10px}
+.jd-head{display:flex;justify-content:center;align-items:center;position:relative;height:46px;flex:none}
+.jd-mark{width:150px;height:28px;background:#fff;-webkit-mask:url(img/plus-mark.png) center/contain no-repeat;mask:url(img/plus-mark.png) center/contain no-repeat}
+.jd-x{position:absolute;right:18px;top:6px;width:34px;height:34px;display:grid;place-items:center;color:#fff}
+.jd-x svg{width:20px;height:20px}
+.jd-h{font-size:23px;line-height:1.16;font-weight:700;letter-spacing:-.01em;text-align:center;margin-top:2px;text-wrap:balance;border-radius:12px}
+.jd-chip{display:flex;justify-content:center;margin-top:8px}
+.jd-chip span{font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;background:rgba(255,255,255,.18)}
+.jd-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;margin-top:16px;border-radius:12px}
+.jd-pill{display:inline-flex;align-items:center;gap:8px;height:37px;padding:0 13px;border-radius:9px;border:1.6px solid rgba(255,255,255,.92);font-size:13.5px;font-weight:600;color:#fff;white-space:nowrap}
+.jd-pill.f{background:linear-gradient(90deg,rgba(176,120,236,.9),rgba(98,198,224,.92))}
+.jd-pill svg,.jd-pill i{width:18px;height:18px;flex:none}
+.jd-pill i{background:#fff;-webkit-mask:url(img/mascot.png) center/contain no-repeat;mask:url(img/mascot.png) center/contain no-repeat}
+.jd-lead{margin-top:12px;background:rgba(255,255,255,.14);border:1.6px solid rgba(255,255,255,.92);border-radius:14px;padding:12px;border-radius:14px}
+.jd-lead .t{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700}
+.jd-lead .t span.ic{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#B078EC,#62C6E0);display:grid;place-items:center;flex:none}
+.jd-lead .t svg,.jd-lead .t i{width:19px;height:19px}
+.jd-lead .t i{background:#fff;-webkit-mask:url(img/mascot.png) center/contain no-repeat;mask:url(img/mascot.png) center/contain no-repeat}
+.jd-lead .d{font-size:12.5px;opacity:.9;margin-top:6px;line-height:1.4}
+.jd-pv{margin-top:8px;background:var(--c-bg);border-radius:10px;padding:8px;color:var(--c-ink);position:relative}
+.jd-grp{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.78;text-align:center;margin-top:9px}
+[data-hl=rest] .jd-pills{gap:5px 6px}
+[data-hl=rest] .jd-pill{height:28px;padding:0 9px;font-size:11.5px;gap:6px;border-width:1.3px;border-radius:7px}
+[data-hl=rest] .jd-pill svg,[data-hl=rest] .jd-pill i{width:14px;height:14px}
+.jd-grp+.jd-pills{margin-top:8px}
+.jd-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:18px;padding:2px;border-radius:14px}
+.jd-plan{position:relative;background:#fff;border-radius:10px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#8CB0EE;border:3px solid transparent;transition:.15s}
+.jd-plan .n{font-size:17px;font-weight:700}
+.jd-plan .p{font-size:13.5px;font-weight:700;margin-top:4px;line-height:1.2}
+.jd-plan .p small{display:block;font-size:12.5px}
+.jd-plan .sv{position:absolute;top:9px;left:50%;transform:translateX(-50%);background:#13A04F;color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.jd-plan .mp{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);background:#3F8CF2;color:#fff;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.jd-plan.on{color:#3F86DA;border-color:#3F8CF2;transform:translateY(-4px);height:116px}
+.jd-plan.on.sva,.jd-plan.sva{padding-top:16px}
+.jd-proof{margin-top:22px;background:rgba(255,255,255,.14);border-radius:12px;padding:11px 12px}
+.jd-proof .t{display:flex;align-items:center;gap:7px;font-size:12.5px;flex-wrap:wrap}
+.jd-proof .t b{font-size:17px}
+.jd-st{color:#FFD15C;letter-spacing:1px;font-size:12.5px}
+.jd-proof q{display:block;font-size:14px;line-height:1.38;margin-top:7px;font-weight:600;quotes:"“" "”"}
+.jd-proof .jd-tr{display:block;font-size:12px;opacity:.85;margin-top:3px}
+.jd-proof small{display:block;font-size:11px;opacity:.75;margin-top:4px}
+.jd-foot{padding:10px 16px 20px;text-align:center}
+.jd-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border-radius:12px;background:var(--j-cta);color:#fff;font:700 16.5px/1 -apple-system,'Inter',sans-serif;letter-spacing:.02em;text-transform:uppercase;box-shadow:0 6px 16px -8px rgba(0,0,0,.4)}
+.jd-cta .pl{font-size:10px;font-weight:800;color:#3F8CF2;background:#fff;border-radius:4px;padding:2px 5px;letter-spacing:.02em}
+.jd-bill{font-size:13px;color:rgba(255,255,255,.75);margin-top:9px}
+.jd-rest{font-size:13px;font-weight:600;color:rgba(255,255,255,.62);margin-top:9px}
+.jd-today{margin:18px 0 4px;border:1.5px dashed rgba(255,255,255,.7);border-radius:12px;padding:11px;text-align:center;font-size:12px;line-height:1.5}
+
+/* their in-app surfaces: feed, chats, a post */
+.jd-app{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:var(--c-bg)}
+.jd-top{background:var(--c-bar);padding:4px 16px 0;flex:none;border-bottom:1px solid var(--c-line)}
+.jd-loc{display:flex;justify-content:space-between;align-items:center;height:34px}
+.jd-loc b{font-size:17px;display:flex;align-items:center;gap:6px}
+.jd-loc b svg{width:16px;height:16px;color:var(--j-cta)}
+.jd-karma{text-align:right;font-size:13px;font-weight:700;color:var(--j-cta);line-height:1}
+.jd-karma small{display:block;font-size:8px;letter-spacing:.06em;color:var(--j-cta);opacity:.8}
+.jd-tabs{display:flex;justify-content:center;gap:34px;font-size:15px;font-weight:600;color:var(--c-mute);margin-top:4px}
+.jd-tabs span{padding:8px 2px;border-bottom:2.5px solid transparent}
+.jd-tabs span.on{color:var(--c-ink);border-color:var(--j-cta)}
+.jd-feed{flex:1;min-height:0;overflow:hidden;padding:10px 10px 0;display:flex;flex-direction:column;gap:8px}
+.jd-post{position:relative;border-radius:8px;padding:10px 40px 10px 12px;color:#fff;font-size:13.5px;line-height:1.38;font-weight:500}
+.jd-post .m{display:flex;gap:6px;align-items:center;font-size:10.5px;opacity:.9;margin-bottom:6px}
+.jd-post .m em{font-style:normal;background:rgba(255,255,255,.22);border-radius:99px;padding:1px 7px}
+.jd-post .v{position:absolute;right:10px;top:50%;transform:translateY(-50%);text-align:center;font-size:12px;font-weight:700;line-height:1.1}
+.jd-post .v:before{content:"⌃";display:block;font-size:17px;line-height:.7}
+.jd-post .v:after{content:"⌄";display:block;font-size:17px;line-height:.6}
+.jd-post .f{display:flex;gap:10px;font-size:10.5px;opacity:.9;margin-top:8px;align-items:center}
+.jd-post .f svg,.jd-big .m svg{width:12px;height:12px}
+.jd-ch svg,.jd-chats .hd svg{width:22px;height:22px}
+.jd-acts svg{flex:none}
+.jd-tabbar{flex:none;display:flex;justify-content:space-around;padding:10px 0 24px;background:var(--c-bar);border-top:1px solid var(--c-line);color:var(--c-mute)}
+.jd-tabbar svg,.jd-tabbar i{width:24px;height:24px}
+.jd-tabbar .on{color:var(--j-cta)}
+.jd-tabbar i{display:block;background:currentColor;-webkit-mask:url(img/mascot.png) center/contain no-repeat;mask:url(img/mascot.png) center/contain no-repeat}
+.jd-ad{position:absolute;inset:0;z-index:8;background:#0E0E10;color:#fff;display:flex;flex-direction:column}
+.jd-ad .bar{display:flex;justify-content:space-between;align-items:center;padding:56px 16px 0;font-size:12px;opacity:.85}
+.jd-ad .cnt{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.5);display:grid;place-items:center;font-weight:700}
+.jd-ad .art{flex:1;margin:18px 16px;border-radius:14px;background:repeating-linear-gradient(135deg,#25252a 0 18px,#2d2d33 18px 36px);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.55);text-align:center;padding:20px}
+.jd-ad .rm{margin:0 16px 30px;height:46px;border-radius:12px;background:var(--j-cta);color:#fff;font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.jd-chats .hd{display:flex;justify-content:space-between;align-items:center;padding:4px 16px 8px;background:var(--c-bar)}
+.jd-chats .hd b{font-size:28px;font-weight:800}
+.jd-seg2{display:flex;margin:0 16px 10px;background:var(--c-line);border-radius:9px;padding:2px;font-size:13px;font-weight:600}
+.jd-seg2 span{flex:1;text-align:center;padding:6px;border-radius:7px;color:var(--c-ink2)}
+.jd-seg2 span.on{background:var(--c-card);color:var(--c-ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.jd-ch{display:flex;gap:11px;align-items:center;padding:10px 16px;background:var(--c-card);border-bottom:1px solid var(--c-line)}
+.jd-av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none}
+.jd-av i{display:block;width:24px;height:24px;background:#fff;-webkit-mask:url(img/mascot.png) center/contain no-repeat;mask:url(img/mascot.png) center/contain no-repeat}
+.jd-ch div{flex:1;min-width:0}
+.jd-ch b{display:block;font-size:14.5px}
+.jd-ch div > span{display:block;font-size:12.5px;color:var(--c-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jd-ch small{font-size:11px;color:var(--c-mute)}
+.jd-lim{margin:14px 16px 0;background:var(--c-card);border-radius:14px;padding:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.jd-lim b{display:block;font-size:15.5px}
+.jd-lim > span{display:block;font-size:12.5px;color:var(--c-mute);margin-top:4px}
+.jd-lim button{margin-top:12px;height:42px;padding:0 18px;border-radius:12px;background:var(--j-cta);color:#fff;font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.jd-pl{font-size:9.5px;font-weight:800;color:#3F8CF2;background:#fff;border-radius:4px;padding:2px 5px}
+.jd-big{margin:12px;border-radius:10px;padding:16px 46px 16px 16px;color:#fff;font-size:17px;line-height:1.4;font-weight:600;position:relative}
+.jd-acts{display:flex;justify-content:space-around;margin:0 12px;padding:10px;background:var(--c-card);border-radius:10px;font-size:12px;color:var(--c-ink2);font-weight:600}
+.jd-acts div{display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:10px;padding:4px 8px}
+.jd-acts svg{width:22px;height:22px}
+.jd-acts .bst{color:var(--j-cta)}
+.jd-rep{margin:10px 12px 0;background:var(--c-card);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--c-ink2)}
+.jd-rep b{color:var(--c-ink);font-size:11px;display:block;margin-bottom:2px}
+.jd-ok{margin:10px 12px 0;padding:9px 12px;border-radius:10px;background:linear-gradient(90deg,#B078EC,#62C6E0);color:#fff;font-size:12.5px;font-weight:700;display:flex;gap:8px;align-items:center}
+.jd-boosted{position:absolute;left:12px;top:-9px;background:var(--j-cta);color:#fff;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:99px}
+.jd-dots{display:flex;gap:8px;margin-top:9px}
+.jd-dots button{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.jd-dots button.on{box-shadow:0 0 0 2.5px var(--c-ink)}
+.jd-bub{max-width:82%;padding:8px 11px;border-radius:14px;font-size:13px;line-height:1.35}
+.jd-bub.in{background:var(--c-card);color:var(--c-ink);border-bottom-left-radius:4px}
+.jd-bub.out{background:#3F8CF2;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.jd-bub small{display:block;white-space:nowrap;font-size:10px;opacity:.75;text-align:right;margin-top:2px}
+.jd-wave{display:flex;align-items:center;gap:2px;height:18px}
+.jd-wave i{width:3px;border-radius:2px;background:#fff}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-in">
+  <span class="logo" role="img" aria-label="Jodel"></span>
+  <span class="sep"></span><span class="lbl">Growth audit · by Adapty</span>
+  <div class="tabs"><button data-v="over" class="on">Overview</button><button data-v="pw">Prototype</button></div>
+  <a class="demo" href="https://calendly.com/d/cty4-37z-zqj" target="_blank" rel="noopener">Book a demo</a>
+</div></nav>
+
+<!-- ======================= OVERVIEW ======================= -->
+<div class="view on" id="view-over">
+  <header class="hero hero-frame sky">
+    <svg class="contour" id="contour" viewBox="0 0 1400 720" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div class="rise" id="rise" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div>
+        <div class="eyebrow">Growth audit · November 2026 · Prepared by Adapty</div>
+        <h1>Thirteen Plus features, all the same size. <em>The one they tapped is one of thirteen.</em></h1>
+        <p class="lead">Jodel Plus opens on “Daily DMs, Never Interrupted by Ads”, thirteen pills of equal weight and 1 Month ticked, whether someone ran out of message requests or wanted to boost a post. Here is the same screen opening on the feature that brought each Jodler there, showing what changes for them, in your design, at your prices.</p>
+        <div class="cta-row">
+          <button class="btn-w" data-open="pw">Open the three paywalls</button>
+          <button class="btn-o" data-walk>▶ Watch the 30-second walkthrough</button>
+        </div>
+        <p class="byline">Built from your Jodel Plus paywall as shipped in the EU, your App Store listing and screenshots, and jodel.com.</p>
+      </div>
+      <div class="fan" aria-hidden="true">
+        <img src="img/fan-3.jpg" style="left:0;top:70px;transform:rotate(-8deg)" alt="">
+        <img src="img/fan-pw.jpg" style="left:29%;top:14px;transform:rotate(-1deg);z-index:2" alt="">
+        <img src="img/fan-5.jpg" style="left:58%;top:80px;transform:rotate(7deg)" alt="">
+        <img class="j" src="img/icon.png" alt="">
+      </div>
+    </div>
+  </header>
+
+  <div class="stats"><div class="wrap">
+    <div class="stat"><b><i>★</i> 4.4</b><span>from 74K ratings on the German App Store, not on the paywall</span></div>
+    <div class="stat"><b>13</b><span>Plus features on the paywall, every pill the same size</span></div>
+    <div class="stat"><b>84%</b><span>what 1 Year saves per week against 1 Week; only 1 Month carries a save tag</span></div>
+    <div class="stat"><b>1</b><span>headline on the paywall we saw: “Daily DMs, Never Interrupted by Ads”</span></div>
+  </div></div>
+
+  <section class="sec"><div class="wrap about">
+    <div>
+      <div class="kick">What this is</div>
+      <h2 class="sec-h">We rebuilt Jodel Plus around <b>the tap that opened it</b>.</h2>
+      <p class="sec-p">Adapty powers subscriptions for 30,000+ apps, so we see what moves purchases across the market. Nearly 500 apps build their paywalls and onboarding in Adapty Flow Builder, and millions of dollars in subscription revenue pass through it every month. For Jodel we looked at one screen: the Plus paywall, and the moments in the app that send people to it.</p>
+      <div class="flowp">
+        <div class="k2">Your Plus paywall today</div>
+        <div><i>1</i><span>The JODEL PLUS mark, the purple-to-blue gradient and the X top right. <b>Good, kept.</b></span></div>
+        <div><i>2</i><span>“Daily DMs, Never Interrupted by Ads” and thirteen pills, half of them filled with your purple-to-teal gradient. <b>Kept, and now ordered by what was tapped.</b></span></div>
+        <div><i>3</i><span>1 Week, 1 Month with “save 67%” and “most popular”, 1 Year. 1 Month arrives ticked. <b>Kept, with 1 Year’s saving said too.</b></span></div>
+        <div><i>4</i><span>The orange UPGRADE TO JODEL PLUS, “billed 12,99 € monthly, cancel anytime”, Restore purchase. <b>Good, kept.</b></span></div>
+      </div>
+    </div>
+    <div>
+      <div class="note"><h4><i>1</i>Your design, not ours</h4><p>The #A069E9 to #388BF3 gradient, the white-outlined pills with their purple-to-teal fill, your icons and mascot, the three white plan cards with the green save tag and the blue “most popular” tab, the #FB7E0B button with the PLUS badge. In the app: your orange, green, pink and purple Jodels, the city header and the karma count. Only the order, one headline and the ticked plan change.</p></div>
+      <div class="note"><h4><i>2</i>Your prices, as published</h4><p>8,99 € for 1 Week, 12,99 € for 1 Month, 74,99 € for 1 Year, as on your paywall and your German App Store listing. 1 Year is 1,43 € a week: 84% less than 1 Week, and 52% less than twelve months at 12,99 € (155,88 €). No trial, no invented discount, no timer.</p></div>
+      <div class="note"><h4><i>3</i>You may have tested some of this</h4><p>We saw one version of the paywall. You may already change the headline by where it opens, or test other prices by country. Tell us what you already ran and we will go deeper on the rest.</p></div>
+    </div>
+  </div></section>
+
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="kick">Where Plus opens</div>
+    <h2 class="sec-h">No paid ads are running. <b>Your best ads are already inside the app.</b></h2>
+    <p class="sec-p">We found no live Jodel campaigns in the Meta Ad Library or the Google Ads Transparency Center this week, and no Apple Ads on your name. The moments that sell Plus happen in Jodel itself: a chat that runs out of requests, a full-screen ad, a Jodel you want seen. Each one is a phone in the prototype.</p>
+    <div class="entries" id="entries"></div>
+  </div></section>
+
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="kick">The five ideas</div>
+    <h2 class="sec-h">Ranked by what we would <b>test first</b>.</h2>
+    <p class="sec-p">Tap any of them to open that change on all three phones.</p>
+    <div class="list" id="list"></div>
+  </div></section>
+
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="kick">Potential outcome</div>
+    <h2 class="sec-h">Five changes, <b>one screen every Plus buyer sees</b>.</h2>
+    <div class="outc">
+      <div class="osh">
+        <img class="ph" src="img/fan-pw.jpg" alt="" style="border-radius:18px;border:4px solid #fff">
+        <div class="k">Run together</div>
+        <h3>Every tap on Plus, answered on the screen they pay on</h3>
+        <div class="nums"><div><b>+15–20%</b><span>purchases</span></div><div><b>+10–15%</b><span>ARPU</span></div></div>
+        <p class="cap">Each entry point’s paywall runs as its own A/B test against today’s, judged on revenue per paywall view.</p>
+      </div>
+      <div class="dos">
+        <div class="do"><div class="k">Do this week</div><h4>Pass the tapped feature to the paywall</h4><p>One value from the button that opened it. In Flow Builder the headline, the lead pill and the preview read it. Live without an app release.</p></div>
+        <div class="do"><div class="k">Then</div><h4>Tick 1 Year and tag its 84%</h4><p>A display change, not a price change. The same three products, with the yearly one pre-selected and its saving said the way you already say 1 Month’s.</p></div>
+        <div class="do"><div class="k">And measure</div><h4>Revenue per paywall view, by entry point and country</h4><p>Adapty reports purchases and revenue for each place Plus opens from, so you learn whether DMs, ads or Boosts sell Plus in each market.</p></div>
+      </div>
+    </div>
+    <div class="endcta"><button class="btn-k" data-open="pw">Open the prototype</button><a class="btn-l" href="https://calendly.com/d/cty4-37z-zqj" target="_blank" rel="noopener">Book a demo</a></div>
+    <p class="foot">Impact ranges are Adapty’s expected effect from teardowns and A/B tests across subscription apps, not measured lift for Jodel. The paywall, its copy, pills and prices (8,99 €, 12,99 €, 74,99 €) come from the Jodel Plus paywall as shipped on iOS in the EU; the same prices are in the in-app purchase list of the German App Store listing, read on 20 November 2026, together with the 10-minute Boost packs. 4.4 from 74K ratings and the reviews by I.Steinberg (22 July 2023) and Sbsinshrat (24 September 2024) are from the German App Store listing; the review by Dr. Hachi (8 April 2022) is from the US listing. Feed colours, the city header and the karma count are from your App Store screenshots; the posts, chats and cities in the prototype are samples. No live ads were found in the Meta Ad Library or the Google Ads Transparency Center on 20 November 2026. 84% is 1,43 € against 8,99 € a week; 52% is 74,99 € against 12 × 12,99 € = 155,88 €; 67% is your own figure, 2,98 € against 8,99 €.</p>
+  </div></section>
+</div>
+
+<!-- ======================= PROTOTYPE ======================= -->
+<div class="view" id="view-pw">
+  <div class="wrap pwv">
+    <div class="kick">Prototype · one paywall per tap</div>
+    <h1>Three taps on Plus. <b>Three paywalls that answer them.</b></h1>
+    <p class="sub">A Jodler out of message requests, one stuck behind a full-screen ad, one who wants their Jodel seen. Same prices, same design. Tap the steps, or tap inside any phone: hit the orange button, pick a plan, close it. Switch what opened each paywall under its phone.</p>
+    <div class="tools">
+      <div class="seg" id="theme"><button data-th="light" class="on">Light</button><button data-th="dark">Dark</button></div>
+      <button class="wt" id="wt" data-walk>▶ 30-second walkthrough</button>
+    </div>
+    <div class="steps" id="steps">
+      <button data-st="today" class="td">Today</button><button data-st="tap">1 · The tap</button><button data-st="pw" class="on">2 · Jodel Plus</button><button data-st="plans">3 · Plans</button><button data-st="open">4 · Back in Jodel</button>
+    </div>
+    <p class="stcap" id="stcap"></p>
+    <div class="dcap" id="dcap"><div class="dcap-in"><span id="dtx"></span><div class="pr"><i id="dpr"></i></div></div></div>
+    <div class="trio" id="trio"></div>
+    <div class="ideas" id="ideas"></div>
+    <div class="qr sky">
+      <img class="masc" src="img/mascot.png" alt="">
+      <img class="code" src="img/qr.svg" alt="QR code to this prototype">
+      <div><h3>Try it on your phone</h3><p>Scan to open the three paywalls in your hand. Every screen is buildable in Adapty Flow Builder and testable against today’s.</p></div>
+      <a class="demo" href="https://calendly.com/d/cty4-37z-zqj" target="_blank" rel="noopener">Book a demo</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var $=function(s,r){ return (r||document).querySelector(s); }, $$=function(s,r){ return [].slice.call((r||document).querySelectorAll(s)); };
+function SV(d,w,fill){ return '<svg viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="currentColor" stroke-width="'+(w||2)+'" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>'; }
+var XI=SV('<path d="M5 5l14 14M19 5 5 19"/>',2.2);
+var G={ theme:'light', step:'pw' };
+
+/* their pill icons, redrawn */
+var IC={
+  chat:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3c5 0 9 3.4 9 7.6S17 18.2 12 18.2c-1 0-2-.1-2.9-.4L4.5 20l1.2-3.6C4 15 3 12.9 3 10.6 3 6.4 7 3 12 3z"/><circle cx="8" cy="10.6" r="1.3" fill="#8c7ae9"/><circle cx="12" cy="10.6" r="1.3" fill="#8c7ae9"/><circle cx="16" cy="10.6" r="1.3" fill="#8c7ae9"/></svg>',
+  video:'<svg viewBox="0 0 24 24" fill="#fff"><rect x="2" y="6" width="14" height="12" rx="2.5"/><path d="M16 10.5 22 7v10l-6-3.5z"/></svg>',
+  smile:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff"/><circle cx="8.6" cy="9.6" r="1.3" fill="#8c7ae9"/><circle cx="15.4" cy="9.6" r="1.3" fill="#8c7ae9"/><path d="M7.5 13.5a4.6 4.6 0 0 0 9 0z" fill="#8c7ae9"/></svg>',
+  ban:SV('<circle cx="12" cy="12" r="9"/><path d="M5.7 18.3 18.3 5.7"/>',2.4),
+  read:SV('<path d="M2 13l4 4 8-9M10 15l2 2 9-10"/>',2.4),
+  drop:'<svg viewBox="0 0 24 24"><path d="M12 2.5C9 7 5.5 10.5 5.5 14.5a6.5 6.5 0 0 0 13 0C18.5 10.5 15 7 12 2.5z" fill="#fff"/><path d="M12 6v14.8a6.5 6.5 0 0 1-6.5-6.3C5.5 11 9 8 12 6z" fill="rgba(140,122,233,.0)"/><path d="M8.5 14.5a3.5 3.5 0 0 0 3.5 3.5" stroke="#8c7ae9" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>',
+  rocket:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M20.5 3.5c-4.8.2-8.4 2.4-10.9 6.4l-3.4.5-2.7 2.8 3.9.9 3.1 3.1.9 3.9 2.8-2.7.5-3.4c4-2.5 6.2-6.1 6.4-10.9z"/><circle cx="15.6" cy="8.4" r="1.6" fill="#8c7ae9"/><path d="M6.2 15.6c-1.6.4-2.6 1.9-2.7 4.9 3-.1 4.5-1.1 4.9-2.7z"/></svg>',
+  mask:'<i></i>',
+  compass:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M19.5 4.5c-6.8 0-13 4.6-14.6 11.4l-.6 3.6 3.6-.6c6.8-1.6 11.6-7.8 11.6-14.4zM9 15c1.6-3 3.8-5.2 6.6-6.6-1.4 2.8-3.6 5-6.6 6.6z"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="2.5" width="6" height="12" rx="3" fill="#fff"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.5"/></svg>'
+};
+/* the thirteen pills, in your order and wording; f = filled with the gradient, as on your paywall */
+var PILLS=[
+  {k:'dm',t:'35 Message Requests/day',ic:'chat',f:1,g:'day'},
+  {k:'video',t:'Record Videos',ic:'video',f:0,g:'always'},
+  {k:'up',t:'30 Uploads/day',ic:'smile',f:1,g:'day'},
+  {k:'ads',t:'No Ads',ic:'ban',f:1,g:'always'},
+  {k:'read',t:'3 Read receipts/week',ic:'read',f:0,g:'week'},
+  {k:'colour',t:'3 Colours/week',ic:'drop',f:0,g:'week'},
+  {k:'boost',t:'3 Boosts/week',ic:'rocket',f:1,g:'week'},
+  {k:'img',t:'Images in chat',ic:'smile',f:1,g:'always'},
+  {k:'gift',t:'3 Gifts/week',ic:'mask',f:0,g:'week'},
+  {k:'explore',t:'Explore',ic:'compass',f:0,g:'always'},
+  {k:'voice',t:'Voice messages in chat',ic:'mic',f:1,g:'always'},
+  {k:'icons',t:'App icons',ic:'mask',f:0,g:'always'},
+  {k:'vrep',t:'25 Voice Replies/day',ic:'mic',f:0,g:'day'}
+];
+function pill(k){ for(var j=0;j<PILLS.length;j++) if(PILLS[j].k===k) return PILLS[j]; }
+/* what opened the paywall, and what the paywall then says */
+var ENTRY={
+  dm:{n:'Out of message requests',h:'Keep the conversation going',d:'Send up to 35 message requests every day, with voice messages and images in chat.',chip:'You tapped Get more requests',back:'your chats',scr:'chat',rel:['voice','img','read']},
+  ads:{n:'A full-screen ad',h:'Jodel, never interrupted by ads',d:'No ads in the feed, in the comments, or full screen when you open the app.',chip:'You tapped Remove ads',back:'the feed',scr:'feed',rel:['up','video','explore']},
+  boost:{n:'Boosting your Jodel',h:'Put your Jodel back on top',d:'Three Boosts every week, each one 10 minutes at the top of your city.',chip:'You tapped Boost',back:'your Jodel',scr:'post',rel:['colour','up','video']},
+  voice:{n:'Voice messages',h:'Say it instead of typing it',d:'Voice messages in chat, and 25 voice replies a day.',chip:'You tapped the mic',back:'the chat',scr:'chat',rel:['vrep','dm','img']},
+  read:{n:'Read receipts',h:'Know when they have read it',d:'See read receipts three times a week, on the chats that matter.',chip:'You tapped Seen',back:'the chat',scr:'chat',rel:['dm','voice','img']},
+  colour:{n:'Picking a colour',h:'Give your Jodel its colour',d:'Choose the colour of three Jodels a week.',chip:'You tapped the colour',back:'your Jodel',scr:'post',rel:['boost','up','video']}
+};
+var LEADK={dm:'dm',ads:'ads',boost:'boost',voice:'voice',read:'read',colour:'colour'};
+var PLANS={w:['1 Week','8,99 €','per week','billed 8,99 € weekly, cancel anytime','8,99 €'],m:['1 Month','2,98 €','per week','billed 12,99 € monthly, cancel anytime','12,99 €'],y:['1 Year','1,43 €','per week','billed 74,99 € yearly, cancel anytime','74,99 €']};
+/* reviews, verbatim, matched to the tap */
+var REV={
+  dm:['Gestern runtergeladen und direkt Leute zum feiern gefunden','Downloaded it yesterday and found people to go out with right away.','I.Steinberg, App Store review'],
+  ads:['lieber scrolle ich hier am Abend mal durch als bei den anderen Social Media Apps :)','I’d rather scroll through here in the evening than the other social media apps.','Sbsinshrat, App Store review'],
+  boost:['Finding local events and hanging out with friends has never been easier!','','Dr. Hachi, App Store review']
+};
+function rev(k){ return REV[k]||REV[ENTRY[k].scr==='chat'?'dm':ENTRY[k].scr==='feed'?'ads':'boost']; }
+var JC=['var(--j-or)','var(--j-gr)','var(--j-pk)','var(--j-pu)','var(--j-bl)'];
+
+/* the three phones: three moments in Jodel that open Plus. Cities are from your App Store screenshots. */
+var PH=[
+  {entry:'dm',city:'Berlin',ring:'#FB7E0B',mt:'Chats',lab:['Out of message requests','She wants to answer one more Jodler tonight.']},
+  {entry:'ads',city:'München',ring:'#A866EA',mt:'Feed',lab:['A full-screen ad','He opens a thread and a video ad takes the screen.']},
+  {entry:'boost',city:'Aachen',ring:'#049A52',mt:'Your Jodel',lab:['Boosting a Jodel','Her question about the campus party needs to be seen.']}
+];
+var COL=PH.map(function(){ return {}; });
+function initCol(i,keep){ var c=COL[i]; if(!keep||!c.entry) c.entry=PH[i].entry; c.plan='y'; c.tplan='m'; c.col=3; c.paid=false; return c; }
+PH.forEach(function(p,i){ initCol(i); });
+
+var TCAP={
+  today:'<b>Today.</b> One Plus screen: “Daily DMs, Never Interrupted by Ads”, thirteen pills of equal weight, 1 Month ticked.',
+  tap:'<b>Step 1.</b> Where each Jodler meets Plus, in your own app: a chat with no requests left, a full-screen ad, the Boost button.',
+  pw:'<b>Step 2. Proposed:</b> Plus opens on what they tapped. The headline, the lead pill with what it does, and a preview of the result.',
+  plans:'<b>Step 3. Proposed:</b> 1 Year ticked and tagged “save 84%”; your 4.4 and a real review right under the plans.',
+  open:'<b>Step 4.</b> After the purchase they land back where they tapped, unlocked. The X lands there too. No second paywall.'
+};
+
+function sb(w){ return '<div class="sb'+(w?' w':'')+'"><span>9:41</span><i class="isl"></i><span class="ic"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="8" rx="2" fill="currentColor"/></svg></span></div>'; }
+function pillHTML(P,cls){ return '<span class="jd-pill'+(P.f?' f':'')+(cls||'')+'">'+IC[P.ic]+P.t+'</span>'; }
+function tabbar(on){ var t=['<i></i>',SV('<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3.5 12h17M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/>',1.8),SV('<path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/>',1.8),SV('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',1.8)];
+  return '<div class="jd-tabbar">'+t.map(function(x,k){ return '<div'+(k===on?' class="on"':'')+'>'+x+'</div>'; }).join('')+'</div>'; }
+function locbar(i,tabs){ return '<div class="jd-top"><div class="jd-loc"><b>'+SV('<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',2.2)+PH[i].city+' ⌄</b><span class="jd-karma">140548<small>MEIN KARMA</small></span></div>'+(tabs?'<div class="jd-tabs"><span>Top 10</span><span class="on">Home</span></div>':'')+'</div>'; }
+var FEED=[
+  ['@main','sehr nah · 7m','Wer kennt eine gute Bar für heute Abend, wo man auch reden kann?',57,0],
+  ['@Fragen','nah · 14m','Ist die Mensa heute eigentlich offen? 🍝',21,3],
+  ['@main','sehr nah · 21m','Mein Mitbewohner hat schon wieder meinen Joghurt gegessen. Ratschläge?',148,2],
+  ['@jodelzoo','nah · 32m','Unsere Katze hat heute das erste Mal Schnee gesehen 🐱❄️',212,1]
+];
+function postHTML(p,k,extra){ return '<div class="jd-post" style="background:'+JC[p[4]]+'">'+(extra||'')+'<div class="m"><em>'+p[0]+'</em><span>'+p[1]+'</span></div>'+p[2]+'<div class="f">'+SV('<path d="M4 5h16v11H8l-4 4z"/>',2)+' '+(k+3)+'</div><span class="v">'+p[3]+'</span></div>'; }
+
+/* step 1 and 4: their surfaces */
+function scrChat(i,mode){
+  var unl=mode==='open';
+  var rows=[['var(--j-or)','Original Jodler','Hey, bist du auch beim Uni-Event?','2m'],['var(--j-pu)','Jodler aus der Nähe','Haha, genau das dachte ich auch 😂','1h'],['var(--j-gr)','@Fragen','Danke für den Tipp mit der Mensa!','3h'],['var(--j-pk)','Jodler aus der Nähe','Wo genau ist das Café?','gestern']];
+  return sb()+'<div class="jd-app jd-chats"><div class="hd"><b>Chats</b><span style="color:var(--j-cta)">'+SV('<path d="M4 20h4L19 9l-4-4L4 16z"/>',2)+'</span></div><div class="jd-seg2"><span class="on">Chats</span><span>Requests</span></div>'+
+    rows.map(function(r){ return '<div class="jd-ch"><span class="jd-av" style="background:'+r[0]+'"><i></i></span><div><b>'+r[1]+'</b><span>'+r[2]+'</span></div><small>'+r[3]+'</small></div>'; }).join('')+
+    (unl?'<div class="jd-ok"><span class="jd-pl">PLUS</span>35 requests a day. Your request was sent.</div>':
+    '<div class="jd-lim"><b>No message requests left today</b><span>You can send more tomorrow.</span><button class="jd-tap" data-act="open" data-e="dm">Get more with <span class="jd-pl">PLUS</span></button></div>')+
+    '<div style="flex:1"></div>'+tabbar(2)+'</div>';
+}
+function scrFeed(i,mode){
+  var unl=mode==='open';
+  var ad=unl?'':'<div class="jd-ad"><div class="bar"><span>Anzeige · Ad</span><span class="cnt">5</span></div><div class="art">A full-screen video ad<br>plays here before the thread opens</div><button class="rm jd-tap" data-act="open" data-e="ads">Remove ads with <span class="jd-pl">PLUS</span></button></div>';
+  return sb(!unl)+'<div class="jd-app">'+locbar(i,1)+(unl?'<div class="jd-ok" style="margin:10px 10px 0"><span class="jd-pl">PLUS</span>No ads. Just Jodels from '+PH[i].city+'.</div>':'')+'<div class="jd-feed">'+FEED.map(function(p,k){ return postHTML(p,k); }).join('')+'</div>'+tabbar(0)+ad+'</div>';
+}
+function scrPost(i,mode){
+  var unl=mode==='open', c=COL[i], col=JC[c.col];
+  return sb()+'<div class="jd-app">'+locbar(i,0)+
+    '<div style="flex:1;min-height:0;overflow:hidden;padding-top:8px">'+
+    '<div class="jd-big" style="background:'+col+';margin-top:16px">'+(unl?'<span class="jd-boosted">🚀 BOOSTED · 10 MIN ON TOP IN '+PH[i].city.toUpperCase()+'</span>':'')+'<div class="m" style="font-size:11px;opacity:.9;margin-bottom:8px">@main · gerade eben · deins</div>Geht heute jemand zur Campus-Party? Suche noch Leute, die mitkommen 🎉<span class="v" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);text-align:center;font-weight:700;font-size:14px">⌃<br>3<br>⌄</span></div>'+
+    '<div class="jd-acts"><div>'+SV('<path d="M4 5h16v11H8l-4 4z"/>',2)+'Reply</div><div>'+SV('<path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/>',2)+'Share</div><div>'+SV('<path d="M6 3h12v18l-6-4-6 4z"/>',2)+'Pin</div>'+
+      (unl?'<div class="bst">'+SV('<path d="M20.5 3.5c-4.8.2-8.4 2.4-10.9 6.4l-3.4.5-2.7 2.8 3.9.9 3.1 3.1.9 3.9 2.8-2.7.5-3.4c4-2.5 6.2-6.1 6.4-10.9z"/>',1.8)+'2 left</div>':'<div class="bst jd-tap" data-act="open" data-e="boost">'+SV('<path d="M20.5 3.5c-4.8.2-8.4 2.4-10.9 6.4l-3.4.5-2.7 2.8 3.9.9 3.1 3.1.9 3.9 2.8-2.7.5-3.4c4-2.5 6.2-6.1 6.4-10.9z"/>',1.8)+'Boost</div>')+'</div>'+
+    '<div class="jd-rep"><b>OJ · sehr nah</b>Ich wäre dabei, wann geht’s los?</div>'+
+    (unl?'<div class="jd-ok"><span class="jd-pl">PLUS</span>Boosted. 2 more Boosts this week.</div>':'')+
+    '</div>'+tabbar(0)+'</div>';
+}
+function surface(i,mode){ var s=ENTRY[COL[i].entry].scr; return s==='chat'?scrChat(i,mode):s==='feed'?scrFeed(i,mode):scrPost(i,mode); }
+
+/* the preview under the lead pill: what Plus changes for them */
+function preview(i){
+  var c=COL[i], k=c.entry, s=ENTRY[k].scr;
+  if(k==='voice') return '<div class="jd-pv" data-hl="pv"><div class="jd-bub in">Wo seid ihr gerade?</div><div class="jd-bub out" style="margin-top:6px"><div class="jd-wave">'+[6,12,9,16,7,13,10,17,8,12,6,14,9,5].map(function(h){ return '<i style="height:'+h+'px"></i>'; }).join('')+'</div><small>0:12</small></div></div>';
+  if(s==='chat') return '<div class="jd-pv" data-hl="pv"><div class="jd-bub in">Hey, bist du auch beim Uni-Event?</div><div class="jd-bub out" style="margin-top:6px">Ja! Treffen wir uns vorne? <small>'+(k==='read'?'Read 21:04 ✓✓':'Request sent ✓')+'</small></div></div>';
+  if(s==='feed') return '<div class="jd-pv" data-hl="pv">'+postHTML(FEED[0],0)+'<div style="font-size:11px;color:var(--c-mute);text-align:center;margin-top:5px">No ad between Jodels. No full-screen ads.</div></div>';
+  return '<div class="jd-pv" data-hl="pv" style="padding-top:16px"><div class="jd-post" style="background:'+JC[c.col]+'">'+(k==='boost'?'<span class="jd-boosted" style="top:-10px">🚀 10 MIN ON TOP IN '+PH[i].city.toUpperCase()+'</span>':'')+'<div class="m"><em>@main</em><span>deins</span></div>Geht heute jemand zur Campus-Party? 🎉<span class="v">3</span></div>'+
+    (k==='colour'?'<div class="jd-dots">'+JC.map(function(x,j){ return '<button data-act="col" data-c="'+j+'" class="'+(j===c.col?'on':'')+'" style="background:'+x+'"></button>'; }).join('')+'</div>':'')+'</div>';
+}
+function plansHTML(i,today){
+  var c=COL[i], sel=today?c.tplan:c.plan;
+  return '<div class="jd-plans" data-hl="plans">'+['w','m','y'].map(function(k){ var P=PLANS[k], sv=k==='m'?'save 67%':(k==='y'&&!today?'save 84%':'');
+    return '<button class="jd-plan'+(sel===k?' on':'')+(sv?' sva':'')+'" data-act="plan" data-p="'+k+'">'+(sv?'<span class="sv">'+sv+'</span>':'')+'<span class="n">'+P[0]+'</span><span class="p">'+P[1]+'<small>'+P[2]+'</small></span>'+(k==='m'?'<span class="mp">most popular</span>':'')+'</button>'; }).join('')+'</div>';
+}
+function scrToday(i){
+  var c=COL[i], P=PLANS[c.tplan];
+  return '<div class="jd-pw scr-in" style="display:flex;flex-direction:column;height:100%">'+sb(1)+'<div class="jd-head"><span class="jd-mark"></span><button class="jd-x" data-act="tx">'+XI+'</button></div>'+
+    '<div class="scr-body"><div class="jd-h" style="font-size:25px">Daily DMs,<br>Never Interrupted by Ads</div>'+
+    '<div class="jd-pills">'+PILLS.map(function(p){ return pillHTML(p); }).join('')+'</div>'+plansHTML(i,1)+
+    '<div class="jd-today">Today: the screen we saw, with this headline and pill order. 1 Month is ticked.</div></div>'+
+    '<div class="scr-foot jd-foot"><button class="jd-cta" data-act="tbuy">Upgrade to Jodel <span class="pl">PLUS</span></button><div class="jd-bill">'+P[3]+'</div><div class="jd-rest">Restore purchase</div></div></div>';
+}
+function scrPW(i){
+  var c=COL[i], E=ENTRY[c.entry], lead=pill(LEADK[c.entry]), P=PLANS[c.plan], R=rev(c.entry);
+  var groups={day:[],week:[],always:[]}; PILLS.forEach(function(p){ if(p.k!==lead.k) groups[p.g].push(p); });
+  var GN={day:'Every day',week:'Every week',always:'Always'};
+  var rest='<div data-hl="rest">'+['day','week','always'].map(function(g){ return '<div class="jd-grp">'+GN[g]+'</div><div class="jd-pills" style="margin-top:8px">'+groups[g].map(function(p){ return pillHTML(p); }).join('')+'</div>'; }).join('')+'</div>';
+  return '<div class="jd-pw" style="display:flex;flex-direction:column;height:100%">'+sb(1)+'<div class="jd-head"><span class="jd-mark"></span><button class="jd-x" data-act="x" aria-label="Close">'+XI+'</button></div>'+
+    '<div class="scr-body"><div class="jd-h" data-hl="head">'+E.h+'</div><div class="jd-chip"><span>'+E.chip+'</span></div>'+
+    '<div class="jd-lead" data-hl="lead"><div class="t"><span class="ic">'+IC[lead.ic]+'</span>'+lead.t+'</div><div class="d">'+E.d+'</div>'+preview(i)+'</div>'+
+    plansHTML(i)+
+    '<div class="jd-proof" data-hl="proof"><div class="t"><b>4.4</b><span class="jd-st">★★★★★</span><span>74K ratings on the App Store</span></div><q>'+R[0]+'</q>'+(R[1]?'<span class="jd-tr">'+R[1]+'</span>':'')+'<small>'+R[2]+'</small></div>'+
+    '<div class="jd-grp" style="margin-top:18px;font-size:11px;opacity:.9">Also in Jodel Plus</div>'+rest+
+    '</div>'+
+    '<div class="scr-foot jd-foot"><button class="jd-cta" data-act="buy">Upgrade to Jodel <span class="pl">PLUS</span></button><div class="jd-bill" data-hl="bill">'+P[3]+'</div><div class="jd-rest">Restore purchase</div></div></div>';
+}
+
+function stepScr(st){ return st==='plans'?'pw':st; }
+function phoneHTML(i){
+  var c=COL[i], s=c.scr, inner;
+  if(s==='today') inner=scrToday(i); else if(s==='tap') inner=surface(i,'tap'); else if(s==='open') inner=surface(i,'open'); else inner=scrPW(i);
+  return '<div class="phone'+(G.theme==='dark'?' dk':'')+'"><section class="scr" data-s="'+s+'">'+inner+'<div class="toast"></div></section></div>';
+}
+function drawCol(i,keep){
+  var box=$('#trio .tcol[data-i="'+i+'"] .pbox'); if(!box) return;
+  var ph=box.querySelector('.phone'), b=box.querySelector('.scr-body'), y=b?b.scrollTop:0;
+  var tmp=document.createElement('div'); tmp.innerHTML=phoneHTML(i);
+  if(ph) box.replaceChild(tmp.firstChild,ph); else box.insertBefore(tmp.firstChild,box.firstChild);
+  if(keep){ var nb=box.querySelector('.scr-body'); if(nb) nb.scrollTop=y; }
+  var pt=$('#trio .tcol[data-i="'+i+'"] .apill .tx'); if(pt) pt.textContent=pillText(i);
+}
+function go(i,s){ COL[i].scr=s; drawCol(i); }
+function pillText(i){ return ENTRY[COL[i].entry].n+' · '+PH[i].city; }
+function ansHTML(i){ return '<div class="ans" data-ans="'+i+'"><label>What opened the paywall<select>'+Object.keys(ENTRY).map(function(k){ return '<option value="'+k+'"'+(k===COL[i].entry?' selected':'')+'>'+ENTRY[k].n+'</option>'; }).join('')+'</select></label></div>'; }
+document.addEventListener('change',function(e){
+  var s=e.target.closest('[data-ans] select'); if(!s) return; var i=+s.closest('[data-ans]').dataset.ans; COL[i].entry=s.value; COL[i].plan='y';
+  if(COL[i].scr==='today') COL[i].scr='pw'; drawCol(i);
+  $$('#trio .tcol[data-i="'+i+'"] [data-hl=head],#trio .tcol[data-i="'+i+'"] [data-hl=lead]').forEach(pulseEl);
+});
+
+function renderTrio(){
+  $('#trio').innerHTML=PH.map(function(p,i){
+    return '<div class="tcol" data-i="'+i+'" style="--ring:'+p.ring+'"><div class="apill"><span class="mt">'+p.mt+'</span><span class="tx">'+pillText(i)+'</span></div><div class="pbox"><i class="finger"></i></div><div class="tlab"><b>'+p.lab[0]+'</b><span>'+p.lab[1]+'</span></div>'+ansHTML(i)+'</div>';
+  }).join('');
+  PH.forEach(function(p,i){ drawCol(i); });
+}
+function paintSteps(){ $$('#steps button').forEach(function(b){ b.classList.toggle('on',b.dataset.st===G.step); }); $('#stcap').innerHTML=TCAP[G.step]||''; $$('#trio .tcol').forEach(function(t){ t.classList.toggle('ring',G.step!=='today'); }); }
+function offTop(el,b){ var y=0; while(el&&el!==b){ y+=el.offsetTop; el=el.offsetParent; } return y; }
+function setStep(st,keep){ G.step=st; PH.forEach(function(p,i){ initCol(i,keep); COL[i].scr=stepScr(st); }); paintSteps(); PH.forEach(function(p,i){ drawCol(i); var a=$('#trio .tcol[data-i="'+i+'"] [data-ans] select'); if(a) a.value=COL[i].entry; });
+  if(st==='plans') PH.forEach(function(p,i){ var box=$('#trio .tcol[data-i="'+i+'"] .pbox'), b=$('.scr-body',box), el=$('[data-hl=plans]',box); if(b&&el) b.scrollTop=Math.max(0,offTop(el,b)-120); }); }
+function toast(i,m){ var e=$('#trio .tcol[data-i="'+i+'"] .toast'); if(!e) return; e.textContent=m; e.classList.add('show'); clearTimeout(e._t); e._t=setTimeout(function(){ e.classList.remove('show'); },2200); }
+
+/* taps inside a phone change only that phone */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]'); if(!t) return; var col=t.closest('.tcol'); if(!col) return;
+  var i=+col.dataset.i, c=COL[i], a=t.dataset.act;
+  if(a==='open'){ c.entry=t.dataset.e||c.entry; c.plan='y'; go(i,'pw'); }
+  else if(a==='plan'){ if(c.scr==='today') c.tplan=t.dataset.p; else c.plan=t.dataset.p; drawCol(i,true); }
+  else if(a==='col'){ c.col=+t.dataset.c; drawCol(i,true); }
+  else if(a==='buy'){ toast(i,'Apple’s purchase sheet opens here'); clearTimeout(c.bt); c.bt=setTimeout(function(){ if(c.scr!=='pw') return; c.paid=true; go(i,'open'); toast(i,'Welcome to Jodel Plus.'); },1500); }
+  else if(a==='tbuy') toast(i,'Apple’s purchase sheet opens here');
+  else if(a==='x'){ go(i,'tap'); toast(i,'Straight back to '+ENTRY[c.entry].back+'. No second paywall.'); }
+  else if(a==='tx') toast(i,'Closes the paywall');
+});
+
+function fit(){ var w=document.documentElement.clientWidth||innerWidth; if(w<300) w=Math.max(w,(screen&&screen.width)||390,320); var sc=w>=1240?0.8:w>=900?(w-160)/(3*390):(w-48)/390; sc=Math.min(0.8,Math.max(0.42,sc)); $('#trio').style.setProperty('--sc',sc.toFixed(3)); }
+
+/* ---- the five ideas ---- */
+var IDEAS=[
+  {t:'Open Plus on the feature they tapped',p:'The paywall we saw leads with DMs and ads, and the pill someone came for is one of thirteen, the same size as the rest. Answer the tap: “Keep the conversation going” over 35 Message Requests/day, or “Put your Jodel back on top” over 3 Boosts/week, with one line on what it does.',o:'CR +15–20%',u:'expected',st:'pw',hl:'head',kept:'Kept: the JODEL PLUS mark, your gradient, your pill style. “Never Interrupted by Ads” stays, as the headline when an ad opened it.'},
+  {t:'Put your 4.4 and a real review under the plans',p:'Your 4.4 from 74K ratings is not on the paywall, and nothing on it says who else uses Plus. Add the rating and one real App Store review that fits the tap, in its original words: “Gestern runtergeladen und direkt Leute zum feiern gefunden” for chats.',o:'CR +10–15%',u:'expected',st:'plans',hl:'proof',kept:'Kept: every word is your users’; the German review keeps its German, with an English line under it.'},
+  {t:'Tick 1 Year and tag what it saves',p:'1 Month arrives ticked with “save 67%” against 1 Week; 1 Year shows 1,43 € per week and no tag, though it saves 84% against the week. Tick 1 Year, give it “save 84%” in your green, and let the line under the button follow: “billed 74,99 € yearly, cancel anytime”.',o:'ARPU +10–15%',u:'expected',st:'plans',hl:'plans',kept:'Kept: the three white cards, per-week prices, your green tag, “most popular” on 1 Month.'},
+  {t:'Show what Plus changes, right under the headline',p:'The pills list features; nothing shows the result. Under the lead pill, show it in Jodel’s own look: the chat request going through, the feed with no ad between Jodels, their Jodel with “10 min on top in Aachen”. For a colour, the dots work: pick one and the Jodel changes.',o:'CR +5–10%',u:'expected',st:'pw',hl:'lead',kept:'Kept: your Jodel colours, the city, the vote count. Boost time is your own 10 minutes.'},
+  {t:'Sort the other twelve pills by when you get them',p:'Today “35 Message Requests/day”, “3 Boosts/week” and “No Ads” sit side by side with nothing to tell daily from weekly, and thirteen pills push the plans down. Lead with the one they tapped, show the plans, then keep every other pill under three small labels: Every day, Every week, Always.',o:'CR +3–8%',u:'expected',st:'pw',hl:'rest',kept:'Kept: all thirteen pills, their wording, icons and filled or outlined style.'}
+];
+function ideaRow(d){ return '<div class="row"><span class="out">'+d.o+' <small>'+d.u+'</small></span><span class="see">See it on the phones →</span></div>'; }
+$('#ideas').innerHTML=IDEAS.map(function(d,i){ return '<div class="idea" data-idea="'+i+'"><div class="n">Idea '+(i+1)+' of 5</div><h3>'+d.t+'</h3><p>'+d.p+'</p>'+ideaRow(d)+'<div class="kept">'+d.kept+'</div></div>'; }).join('');
+$('#list').innerHTML=IDEAS.map(function(d,i){ return '<div class="it" data-idea="'+i+'"><div class="em">0'+(i+1)+'</div><div><h3>'+d.t+'</h3><p>'+d.p+'</p>'+ideaRow(d)+'</div></div>'; }).join('');
+/* where Plus opens: three cards, each opening its phone */
+$('#entries').innerHTML=PH.map(function(p,i){ var E=ENTRY[p.entry];
+  var pv=p.entry==='dm'?'<div style="background:#F4F4F6;height:100%;padding:12px"><div class="jd-lim" style="margin:30px 6px 0"><b>No message requests left today</b><span>You can send more tomorrow.</span><span style="margin-top:10px;height:36px;padding:0 14px;border-radius:10px;background:#FB7E0B;color:#fff;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:6px">Get more with <span class="jd-pl">PLUS</span></span></div></div>':
+    p.entry==='ads'?'<div style="background:#0E0E10;height:100%;padding:14px;color:#fff;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;font-size:12px;opacity:.8"><span>Anzeige · Ad</span><span>5</span></div><div style="flex:1;border-radius:10px;background:repeating-linear-gradient(135deg,#25252a 0 18px,#2d2d33 18px 36px)"></div><div style="height:38px;border-radius:10px;background:#FB7E0B;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">Remove ads with Jodel Plus</div></div>':
+    '<div style="background:#F4F4F6;height:100%;padding:16px"><div class="jd-post" style="background:#A866EA;margin-top:10px"><div class="m"><em>@main</em><span>deins</span></div>Geht heute jemand zur Campus-Party? 🎉<span class="v">3</span></div><div style="margin-top:12px;display:inline-flex;gap:6px;align-items:center;color:#FB7E0B;font-weight:700;font-size:13px;background:#fff;border-radius:10px;padding:8px 12px">🚀 Boost</div></div>';
+  return '<div class="en" role="button" tabindex="0" data-phone="'+i+'"><div class="pv">'+pv+'</div><h4>'+E.n+'</h4><p>'+(p.entry==='dm'?'Their chats are full of people nearby, and the requests ran out. Today Plus opens on “Daily DMs, Never Interrupted by Ads”.':p.entry==='ads'?'Many of your App Store reviews this autumn mention full-screen ads. The one moment someone is most ready to pay for No Ads is right after one.':'Your Boost packs sell 10 minutes at the top of a city. Plus includes three a week, but on the paywall it is one pill among thirteen.')+'</p><u>Open its paywall</u></div>'; }).join('');
+
+function pulseEl(el){ el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse'); }
+function toTrio(){ var t=$('#trio'); if(!t) return; var y=t.getBoundingClientRect().top+scrollY-(innerWidth<900?84:Math.max(84,(innerHeight-t.offsetHeight)/2)); window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+function showIdea(n){
+  var d=IDEAS[n]; stopWalk(); showView('pw'); setStep(d.st);
+  setTimeout(function(){
+    toTrio();
+    $$('#trio [data-hl="'+d.hl+'"]').forEach(function(el){ var b=el.closest('.scr-body'); if(b) b.scrollTop=Math.max(0,offTop(el,b)-(d.hl==='proof'?200:d.hl==='plans'?120:d.hl==='rest'?60:80)); pulseEl(el); });
+  },80);
+}
+document.addEventListener('click',function(e){ var c=e.target.closest('[data-idea]'); if(c) showIdea(+c.dataset.idea); });
+document.addEventListener('click',function(e){ var c=e.target.closest('[data-phone]'); if(!c) return; var i=+c.dataset.phone; stopWalk(); showView('pw'); setStep('tap');
+  setTimeout(function(){ toTrio(); var col=$('#trio .tcol[data-i="'+i+'"]'); col.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); pulseEl($('.phone',col)); },80); });
+
+/* ---- views ---- */
+function showView(v){ $$('.view').forEach(function(x){ x.classList.remove('on'); }); $('#view-'+v).classList.add('on'); $$('.tabs button').forEach(function(b){ b.classList.toggle('on',b.dataset.v===v); });
+  if(v!=='pw') stopWalk();
+  var q=new URLSearchParams(location.search); q.delete('open'); q.delete('step'); if(v==='pw') q.set('view','proto'); else q.delete('view'); history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')); scrollTo(0,0); fit(); }
+$$('.tabs button').forEach(function(b){ b.addEventListener('click',function(){ showView(b.dataset.v); }); });
+$$('[data-open]').forEach(function(b){ b.addEventListener('click',function(){ showView(b.dataset.open); }); });
+$$('#steps button').forEach(function(b){ b.addEventListener('click',function(){ stopWalk(); setStep(b.dataset.st,true); }); });
+$$('#theme button').forEach(function(b){ b.addEventListener('click',function(){ G.theme=b.dataset.th; $$('#theme button').forEach(function(x){ x.classList.toggle('on',x===b); }); $$('#trio .phone').forEach(function(p){ p.classList.toggle('dk',G.theme==='dark'); }); }); });
+
+/* ---- the 30-second walkthrough: drives the real phones ---- */
+var walk={on:false,tok:0};
+function wait(ms,tk){ return new Promise(function(res,rej){ setTimeout(function(){ tk===walk.tok?res():rej('stop'); },ms); }); }
+function cap(t,p){ $('#dtx').textContent=t; $('#dpr').style.width=p+'%'; }
+async function tap(i,sel,tk){
+  var col=$('#trio .tcol[data-i="'+i+'"]'), box=$('.pbox',col), el=$(sel,box), f=$('.finger',box); if(!el) return;
+  var b=box.getBoundingClientRect(), r=el.getBoundingClientRect();
+  f.classList.add('on'); f.style.left=(r.left-b.left+r.width/2)+'px'; f.style.top=(r.top-b.top+r.height/2)+'px';
+  await wait(380,tk); f.classList.add('press'); await wait(120,tk); f.classList.remove('press'); el.click(); await wait(160,tk);
+}
+async function scrollAll(sel,off,tk){ var bs=PH.map(function(p,i){ var box=$('#trio .tcol[data-i="'+i+'"] .pbox'), b=$('.scr-body',box), el=$(sel,box); return b&&el?[b,b.scrollTop,Math.max(0,offTop(el,b)-off)]:null; }).filter(Boolean), t0=performance.now();
+  while(true){ var k=Math.min(1,(performance.now()-t0)/600), e=1-Math.pow(1-k,3); bs.forEach(function(x){ x[0].scrollTop=x[1]+(x[2]-x[1])*e; }); if(k>=1) break; await wait(16,tk); } }
+function pulseAll(hl){ $$('#trio [data-hl="'+hl+'"]').forEach(pulseEl); }
+async function startWalk(){
+  stopWalk(); var tk=++walk.tok; walk.on=true; showView('pw'); $('#dcap').classList.add('on'); $('#wt').classList.add('on'); $('#wt').textContent='■ Stop walkthrough';
+  var t0=performance.now();
+  try{
+    setStep('tap'); toTrio();
+    cap('Three Jodlers meet Plus in three places: no requests left, a full-screen ad, the Boost button.',8); await wait(2100,tk);
+    await tap(1,'[data-act=open]',tk); go(0,'pw'); go(2,'pw');
+    cap('Each paywall answers the tap: keep chatting, no ads, put your Jodel on top.',22); pulseAll('head'); await wait(2100,tk);
+    cap('The lead pill says what it does and shows the result, in Jodel’s own look.',36); pulseAll('lead'); await wait(2000,tk);
+    cap('1 Year arrives ticked: 1,43 € a week, save 84% against 1 Week.',50); pulseAll('plans'); await wait(1400,tk);
+    await tap(1,'[data-p=m]',tk); await wait(600,tk); await tap(1,'[data-p=y]',tk); await wait(500,tk);
+    await scrollAll('[data-hl=proof]',200,tk);
+    cap('Your 4.4 from 74K ratings and a real review, right under the plans.',66); pulseAll('proof'); await wait(1700,tk);
+    await scrollAll('[data-hl=rest]',60,tk); cap('Every other pill stays, sorted: every day, every week, always.',80); pulseAll('rest'); await wait(1500,tk);
+    cap('The X goes straight back to the feed. No second paywall.',92); await tap(1,'[data-act=x]',tk); go(0,'tap'); go(2,'tap'); await wait(1600,tk);
+    cap('That’s the screen. Switch what opened each paywall under its phone.',100); console.log('walkthrough ms',Math.round(performance.now()-t0));
+    await wait(1400,tk); stopWalk(); setStep('pw');
+  }catch(e){}
+}
+function stopWalk(){ if(!walk.on) return; walk.on=false; walk.tok++; $('#dcap').classList.remove('on'); $('#wt').classList.remove('on'); $('#wt').textContent='▶ 30-second walkthrough'; $$('.finger').forEach(function(f){ f.classList.remove('on'); }); }
+$$('[data-walk]').forEach(function(b){ b.addEventListener('click',function(){ if(walk.on&&b.id==='wt'){ stopWalk(); return; } startWalk(); }); });
+document.addEventListener('pointerdown',function(e){ if(!walk.on||!e.isTrusted) return; if(e.target.closest('#wt')) return; if(e.target.closest('#trio,#steps,#theme,.tabs,.nav')) stopWalk(); },true);
+
+/* hero: their white contour lines, and Jodels rising up the feed with their votes */
+(function(){
+  var s=''; for(var k=0;k<11;k++){ var y=60+k*62; s+='<path d="M-20 '+y+' C 260 '+(y-40)+', 420 '+(y+60)+', 720 '+(y+10)+' S 1160 '+(y-50)+', 1420 '+(y+20)+'"/>'; } $('#contour').innerHTML=s;
+  var J=[['@main · sehr nah','Habt ihr die letzte Folge GNTM gesehen?',57,'#E45BB5'],['@Fragen · nah','Ist die Mensa heute offen?',21,'#049A52'],['@main · München','Wer kommt mit zur Campus-Party?',148,'#F87F0C'],['@jodelzoo · nah','Erster Schnee für unsere Katze 🐱',212,'#A866EA'],['@main · Berlin','Suche Leute zum Feiern heute Abend',96,'#F87F0C'],['@Fragen · sehr nah','Beste Pizza in Aachen?',33,'#049A52']];
+  var h=''; J.forEach(function(j,k){ h+='<div class="jd" style="background:'+j[3]+';left:'+((k%3)*33+(k%2?4:0))+'%;animation-delay:-'+(k*3)+'s;--y:'+(80+k*90)+'px"><small>'+j[0]+'</small>'+j[1]+'<b>'+j[2]+'</b></div>'; }); $('#rise').innerHTML=h;
+})();
+
+renderTrio(); fit(); paintSteps(); addEventListener('resize',fit); addEventListener('load',fit); addEventListener('pageshow',fit); if(window.ResizeObserver) new ResizeObserver(fit).observe(document.documentElement);
+(function(){ var q=new URLSearchParams(location.search), st=q.get('step'); if(q.get('view')==='proto'||q.get('open')==='proto') showView('pw'); if(st) setStep(st); })();
+</script>
+<script>
+/* GitHub Pages lets browsers keep this page for 10 minutes; if a newer build is live, reload onto it */
+var BUILD='b1';
+fetch(location.pathname+'?cb='+Date.now(),{cache:'no-store'}).then(function(r){ return r.text(); }).then(function(h){
+  var m=h.match(/var BUILD='([^']+)'/); if(m && m[1]!==BUILD){ var q=new URLSearchParams(location.search); q.set('v',m[1]); location.replace(location.pathname+'?'+q.toString()); }
+}).catch(function(){});
+</script>
+</body>
+</html>
